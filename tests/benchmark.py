@@ -70,11 +70,11 @@ def benchmark(num_primes):
     end_ps = time.time()
     print(f'python-streams: {end_ps - start_ps} seconds')
 
-    print(f'Calculating with pyfunctional...')
-    start_pf = time.time()
-    sieve_eratosthenes_pyfunctional().take(num_primes).to_list()
-    end_pf = time.time()
-    print(f'python-streams: {end_pf - start_pf} seconds')
+    # print(f'Calculating with pyfunctional...')
+    # start_pf = time.time()
+    # sieve_eratosthenes_pyfunctional().take(num_primes).to_list()
+    # end_pf = time.time()
+    # print(f'python-streams: {end_pf - start_pf} seconds')
 
     print(f'Calculating with builtin iterators...')
     start_it = time.time()
