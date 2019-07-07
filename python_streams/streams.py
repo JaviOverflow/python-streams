@@ -1,6 +1,6 @@
 from functools import lru_cache
 from itertools import islice, chain
-from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List
+from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any
 
 T = TypeVar('T')
 V = TypeVar('V')
@@ -27,8 +27,8 @@ class Stream(Generic[T], Iterable):
     def zip(self, other: Iterable[V]) -> 'Stream[Tuple[T, V]]':
         return Stream(zip(self.items, other))
 
-    def max(self, comparator: Optional[Callable[[T, T], T]]) -> T:
-        return max(self.to_list(), key=comparator) if comparator else max(self.items)
+    def max(self, key: Optional[Callable[[T], Any]] = None) -> T:
+        return max(self.to_list(), key=key) if key else max(self.items)
 
     def take(self, n: int) -> 'Stream[T]':
         return Stream(islice(self, n))
