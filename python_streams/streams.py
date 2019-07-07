@@ -14,7 +14,6 @@ class Stream(Generic[T], Iterable):
         yield from self.items
 
     def map(self, func: Callable[[T], V]) -> 'Stream[V]':
-        print('Map')
         return Stream(map(func, self.items))
 
     def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
