@@ -1,4 +1,5 @@
 from functools import lru_cache
+from itertools import islice, chain
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List
 
 T = TypeVar('T')
@@ -29,22 +30,31 @@ class Stream(Generic[T], Iterable):
     def max(self, comparator: Optional[Callable[[T, T], T]]) -> T:
         return max(self.to_list(), key=comparator) if comparator else max(self.items)
 
-    def first
+    def take(self, n: int) -> 'Stream[T]':
+        return Stream(islice(self, n))
+
+    def drop(self, n: int) -> 'Stream[T]':
+        for i in range(n):
+            it = next(self.items, None)
+            if it is None:
+                return Stream(())
+        return Stream(self.items)
+
+    def first(self) -> T:
+        return next(self.items)
+
+    def advance(self) -> Tuple[T, 'Stream[T]']:
+        return self.first(), self
+
+    def chain(self, *streams: 'Iterable[T]') -> 'Stream[T]':
+        return Stream(chain(self, *streams))
+
+    def append(self, item: T) -> 'Stream[T]':
+        return Stream((item,)).chain(self)
+
+    def extend(self, item: T) -> 'Stream[T]':
+        return self.chain(Stream((item,)))
 
     @lru_cache(1)
     def to_list(self) -> List[T]:
         return list(self.items)
-
-
-if __name__ == '__main__':
-    def inc(x: int):
-        print(f'Incremented {x}')
-        return x + 1
-
-    x = Stream([1, 2, 3]).map(inc)
-    print('Mark')
-    print(x.to_list())
-    print(x.to_list())
-    y = Stream([1, 2, 3])
-    # for i, c in Stream(cycle(['a', 'b', 'c', 'd'])).zip(count(1)):
-    #     pass
