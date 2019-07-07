@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List
 
 T = TypeVar('T')
@@ -26,8 +27,9 @@ class Stream(Generic[T], Iterable):
         return Stream(zip(self.items, other))
 
     def max(self, comparator: Optional[Callable[[T, T], T]]) -> T:
-        return max(self.items, key=comparator) if comparator else max(self.items)
+        return max(self.to_list(), key=comparator) if comparator else max(self.items)
 
+    @lru_cache(1)
     def to_list(self) -> List[T]:
         return list(self.items)
 
@@ -39,7 +41,8 @@ if __name__ == '__main__':
 
     x = Stream([1, 2, 3]).map(inc)
     print('Mark')
-    x.to_list()
+    print(x.to_list())
+    print(x.to_list())
     y = Stream([1, 2, 3])
     # for i, c in Stream(cycle(['a', 'b', 'c', 'd'])).zip(count(1)):
     #     pass
