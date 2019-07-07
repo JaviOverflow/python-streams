@@ -6,7 +6,7 @@ V = TypeVar('V')
 
 
 class Stream(Generic[T], Iterable):
-    def __init__(self, items: Iterable[T]):
+    def __init__(self, items: Iterable[T] = ()):
         self.items = iter(items)
 
     def __iter__(self) -> Iterator[T]:
@@ -28,6 +28,8 @@ class Stream(Generic[T], Iterable):
 
     def max(self, comparator: Optional[Callable[[T, T], T]]) -> T:
         return max(self.to_list(), key=comparator) if comparator else max(self.items)
+
+    def first
 
     @lru_cache(1)
     def to_list(self) -> List[T]:
