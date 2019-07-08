@@ -90,3 +90,9 @@ def test_map_when_items_are_tuples():
     assert (Stream([('a', 1), ('b', 5), ('c', 3)])
             .map(lambda k, v: (k, v * 2))
             .to_list()) == [('a', 2), ('b', 10), ('c', 6)]
+
+
+def test_filter_when_items_are_tuples():
+    assert (Stream([('a', 1), ('b', 5), ('c', 3)])
+            .filter(lambda k, v: v > 3)
+            .to_list()) == [('b', 5)]
