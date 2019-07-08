@@ -19,6 +19,28 @@ def test_caesar_cypher():
     assert caesar_decypher('wigvix', 4) == 'secret'
 
 
+def caesar_cypher_with_special_chars(message: str, shift: int) -> str:
+    a = ord('a')
+    z = ord('z')
+    num_letters = (z - a) + 1
+    ascii_cycle = partials.compose3(
+        partials.add(-a),
+        partials.modulo(num_letters),
+        partials.add(a))
+    return ''.join(Stream(message).map(ord).map_if(
+        condition=partials.is_in(range(a, z + 1)),
+        func=partials.add(shift)
+    ).map_if(
+        condition=partials.is_in(range(a + shift, z + shift + 1)),
+        func=ascii_cycle
+    ).map(chr))
+
+
+def test_caesar_cypher_with_special_chars():
+    assert caesar_cypher('hey hey!', 3) != 'khb khb!'
+    assert caesar_cypher_with_special_chars('hey hey!', 3) == 'khb khb!'
+
+
 # def test_get():
 #     x = Stream([{'x': 1, 'y': 3}, {'x': 2, 'y': 4}]).map(partials.get('x'))
 #     y = Stream([[1, 2], [3, 4]]).map(partials.nth(1))

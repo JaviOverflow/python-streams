@@ -1,6 +1,6 @@
 from functools import lru_cache
 from itertools import islice, chain
-from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any
+from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
 
 T = TypeVar('T')
 V = TypeVar('V')
@@ -16,10 +16,13 @@ class Stream(Generic[T], Iterable):
     def map(self, func: Callable[[T], V]) -> 'Stream[V]':
         return Stream(map(func, self.items))
 
+    def map_if(self, condition: Callable[[T], bool], func: Callable[[T], V]) -> 'Stream[Union[T, V]]':
+        return Stream(map(lambda x: func(x) if condition(x) else x, self.items))
+
     def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
         return Stream(filter(func, self.items))
 
-    def for_each(self, func: Callable[[T], None]):
+    def for_each(self, func: Callable[[T], Any]):
         for x in self.items:
             func(x)
 

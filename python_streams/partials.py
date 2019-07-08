@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar, Union, Any, Sequence, Dict
+from typing import Callable, TypeVar, Union, Any, Sequence, Dict, Iterable
 
 T = TypeVar('T', int, float)
 NumberToNumber = Callable[[T], T]
@@ -57,3 +57,11 @@ def compose3(
         third_func: Callable[[W], X]
 ) -> Callable[[U], X]:
     return compose(first_func, compose(second_func, third_func))
+
+
+def is_in(it: Iterable[T]) -> Callable[[T], bool]:
+    return lambda x: x in it
+
+
+def is_not_in(it: Iterable[T]) -> Callable[[T], bool]:
+    return lambda x: x not in it
