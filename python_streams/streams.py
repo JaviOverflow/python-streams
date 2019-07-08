@@ -1,9 +1,19 @@
-from functools import lru_cache, reduce
+from functools import lru_cache
+from inspect import signature
 from itertools import islice, chain
+from types import BuiltinFunctionType
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
 
 T = TypeVar('T')
 V = TypeVar('V')
+
+
+def expand(func: Union[Callable[[T], V], Callable[..., V]]):
+    def expanded_func(item: ...) -> V:
+        return func(*item)
+
+    return (expanded_func if not isinstance(func, BuiltinFunctionType) and len(signature(func).parameters) > 1
+            else func)
 
 
 class Stream(Generic[T], Iterable):
@@ -13,21 +23,19 @@ class Stream(Generic[T], Iterable):
     def __iter__(self) -> Iterator[T]:
         yield from self.items
 
-    def map(self, func: Callable[[T], V]) -> 'Stream[V]':
-        return Stream(map(func, self.items))
+    def map(self, func: Union[Callable[[T], V], Callable[..., V]]) -> 'Stream[V]':
+        return Stream(map(expand(func), self.items))
 
-    def map_if(self, condition: Callable[[T], bool], func: Callable[[T], V]) -> 'Stream[Union[T, V]]':
-        return Stream(map(lambda x: func(x) if condition(x) else x, self.items))
+    def map_if(self, condition: Union[Callable[[T], bool], Callable[..., bool]],
+               func: Union[Callable[[T], V], Callable[..., V]]) -> 'Stream[Union[T, V]]':
+        return Stream(map(lambda x: expand(func)(x) if condition(x) else x, self.items))
 
-    def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
-        return Stream(filter(func, self.items))
+    def filter(self, func: Union[Callable[[T], bool], Callable[..., bool]]) -> 'Stream[T]':
+        return Stream(filter(expand(func), self.items))
 
-    def reduce(self, func: Callable[[V, T], V], initial: T) -> T:
-        return reduce(func, self.items, initial)
-
-    def for_each(self, func: Callable[[T], Any]):
+    def for_each(self, func: Union[Callable[[T], V], Callable[..., V]]):
         for x in self.items:
-            func(x)
+            expand(func)(x)
 
     def zip(self, other: Iterable[V]) -> 'Stream[Tuple[T, V]]':
         return Stream(zip(self.items, other))

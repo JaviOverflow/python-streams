@@ -39,7 +39,6 @@ accum = 0
 
 
 def test_for_each():
-
     def _side_effect(inc: int):
         global accum
         accum += inc
@@ -84,3 +83,15 @@ def test_append():
 
 def test_extend():
     assert Stream([1, 2]).extend(3).to_list() == [1, 2, 3]
+
+
+def test_map_when_items_are_tuples():
+    assert (Stream([('a', 1), ('b', 5), ('c', 3)])
+            .map(lambda k, v: (k, v * 2))
+            .to_list()) == [('a', 2), ('b', 10), ('c', 6)]
+
+
+def test_filter_when_items_are_tuples():
+    assert (Stream([('a', 1), ('b', 5), ('c', 3)])
+            .filter(lambda k, v: v > 3)
+            .to_list()) == [('b', 5)]
