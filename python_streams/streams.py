@@ -6,11 +6,11 @@ T = TypeVar('T')
 V = TypeVar('V')
 
 
-def w(func):
-    def lambda_func(item):
+def expand(func: Callable[[T], V]):
+    def expanded_function(item: T) -> V:
         return func(*item) if type(item) is tuple else func(item)
 
-    return lambda_func
+    return expanded_function
 
 
 class Stream(Generic[T], Iterable):
@@ -21,17 +21,17 @@ class Stream(Generic[T], Iterable):
         yield from self.items
 
     def map(self, func: Callable[[T], V]) -> 'Stream[V]':
-        return Stream(map(w(func), self.items))
+        return Stream(map(expand(func), self.items))
 
     def map_if(self, condition: Callable[[T], bool], func: Callable[[T], V]) -> 'Stream[Union[T, V]]':
-        return Stream(map(lambda x: w(func)(x) if condition(x) else x, self.items))
+        return Stream(map(lambda x: expand(func)(x) if condition(x) else x, self.items))
 
     def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
-        return Stream(filter(w(func), self.items))
+        return Stream(filter(expand(func), self.items))
 
     def for_each(self, func: Callable[[T], Any]):
         for x in self.items:
-            w(func)(x)
+            expand(func)(x)
 
     def zip(self, other: Iterable[V]) -> 'Stream[Tuple[T, V]]':
         return Stream(zip(self.items, other))
