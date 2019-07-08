@@ -8,11 +8,12 @@ T = TypeVar('T')
 V = TypeVar('V')
 
 
-def expand(func: Callable[[T], V]):
-    def expanded_func(item: T) -> V:
+def expand(func: Union[Callable[[T], V], Callable[..., V]]):
+    def expanded_func(item: ...) -> V:
         return func(*item)
 
-    return expanded_func if not isinstance(func, BuiltinFunctionType) and len(signature(func).parameters) > 1 else func
+    return (expanded_func if not isinstance(func, BuiltinFunctionType) and len(signature(func).parameters) > 1
+            else func)
 
 
 class Stream(Generic[T], Iterable):
