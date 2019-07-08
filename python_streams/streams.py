@@ -7,8 +7,11 @@ from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Gener
 T = TypeVar('T')
 V = TypeVar('V')
 
+Transform = Union[Callable[[T], V], Callable[..., V]]
+Filter = Union[Callable[[T], bool], Callable[..., bool]]
 
-def expand(func: Union[Callable[[T], V], Callable[..., V]]):
+
+def expand(func: Transform):
     def expanded_func(item: ...) -> V:
         return func(*item)
 
@@ -23,24 +26,23 @@ class Stream(Generic[T], Iterable):
     def __iter__(self) -> Iterator[T]:
         yield from self.items
 
-    def map(self, func: Union[Callable[[T], V], Callable[..., V]]) -> 'Stream[V]':
+    def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))
 
-    def map_if(self, condition: Union[Callable[[T], bool], Callable[..., bool]],
-               func: Union[Callable[[T], V], Callable[..., V]]) -> 'Stream[Union[T, V]]':
+    def map_if(self, condition: Filter, func: Transform) -> 'Stream[Union[T, V]]':
         return Stream(map(lambda x: expand(func)(x) if condition(x) else x, self.items))
 
-    def filter(self, func: Union[Callable[[T], bool], Callable[..., bool]]) -> 'Stream[T]':
-        return Stream(filter(expand(func), self.items))
+    def filter(self, condition: Filter) -> 'Stream[T]':
+        return Stream(filter(expand(condition), self.items))
 
-    def for_each(self, func: Union[Callable[[T], V], Callable[..., V]]):
+    def for_each(self, func: Transform):
         for x in self.items:
             expand(func)(x)
 
     def zip(self, other: Iterable[V]) -> 'Stream[Tuple[T, V]]':
         return Stream(zip(self.items, other))
 
-    def max(self, key: Optional[Callable[[T], Any]] = None) -> T:
+    def max(self, key: Optional[Transform] = None) -> T:
         return max(self.to_list(), key=key) if key else max(self.items)
 
     def take(self, n: int) -> 'Stream[T]':
