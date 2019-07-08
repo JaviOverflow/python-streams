@@ -23,16 +23,17 @@ class Stream(Generic[T], Iterable):
     def __iter__(self) -> Iterator[T]:
         yield from self.items
 
-    def map(self, func: Callable[[T], V]) -> 'Stream[V]':
+    def map(self, func: Union[Callable[[T], V], Callable[..., V]]) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))
 
-    def map_if(self, condition: Callable[[T], bool], func: Callable[[T], V]) -> 'Stream[Union[T, V]]':
+    def map_if(self, condition: Union[Callable[[T], bool], Callable[..., bool]],
+               func: Union[Callable[[T], V], Callable[..., V]]) -> 'Stream[Union[T, V]]':
         return Stream(map(lambda x: expand(func)(x) if condition(x) else x, self.items))
 
-    def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
+    def filter(self, func: Union[Callable[[T], bool], Callable[..., bool]]) -> 'Stream[T]':
         return Stream(filter(expand(func), self.items))
 
-    def for_each(self, func: Callable[[T], Any]):
+    def for_each(self, func: Union[Callable[[T], V], Callable[..., V]]):
         for x in self.items:
             expand(func)(x)
 
