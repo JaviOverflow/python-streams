@@ -8,7 +8,8 @@ V = TypeVar('V')
 
 def w(func):
     def lambda_func(item):
-        return func(*item) if type(item) is Tuple else func(item)
+        return func(*item) if type(item) is tuple else func(item)
+
     return lambda_func
 
 
