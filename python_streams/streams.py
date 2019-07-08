@@ -20,17 +20,17 @@ class Stream(Generic[T], Iterable):
         yield from self.items
 
     def map(self, func: Callable[[T], V]) -> 'Stream[V]':
-        return Stream(map(func, self.items))
+        return Stream(map(w(func), self.items))
 
     def map_if(self, condition: Callable[[T], bool], func: Callable[[T], V]) -> 'Stream[Union[T, V]]':
-        return Stream(map(lambda x: func(x) if condition(x) else x, self.items))
+        return Stream(map(lambda x: w(func)(x) if condition(x) else x, self.items))
 
     def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
         return Stream(filter(w(func), self.items))
 
     def for_each(self, func: Callable[[T], Any]):
         for x in self.items:
-            func(x)
+            w(func)(x)
 
     def zip(self, other: Iterable[V]) -> 'Stream[Tuple[T, V]]':
         return Stream(zip(self.items, other))
