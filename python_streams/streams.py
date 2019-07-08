@@ -1,5 +1,7 @@
 from functools import lru_cache
+from inspect import signature
 from itertools import islice, chain
+from types import BuiltinFunctionType
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
 
 T = TypeVar('T')
@@ -7,10 +9,10 @@ V = TypeVar('V')
 
 
 def expand(func: Callable[[T], V]):
-    def expanded_function(item: T) -> V:
-        return func(*item) if type(item) is tuple else func(item)
+    def expanded_func(item: T) -> V:
+        return func(*item)
 
-    return expanded_function
+    return expanded_func if not isinstance(func, BuiltinFunctionType) and len(signature(func).parameters) > 1 else func
 
 
 class Stream(Generic[T], Iterable):
