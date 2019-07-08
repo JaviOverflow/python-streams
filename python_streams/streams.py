@@ -1,4 +1,4 @@
-from functools import lru_cache
+from functools import lru_cache, reduce
 from itertools import islice, chain
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
 
@@ -21,6 +21,9 @@ class Stream(Generic[T], Iterable):
 
     def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
         return Stream(filter(func, self.items))
+
+    def reduce(self, func: Callable[[V, T], V], initial: T) -> T:
+        return reduce(func, self.items, initial)
 
     def for_each(self, func: Callable[[T], Any]):
         for x in self.items:
@@ -60,3 +63,6 @@ class Stream(Generic[T], Iterable):
     @lru_cache(1)
     def to_list(self) -> List[T]:
         return list(self.items)
+
+    def join(self, separator: str = '') -> str:
+        return separator.join(self.items)

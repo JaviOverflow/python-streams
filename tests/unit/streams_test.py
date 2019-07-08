@@ -1,5 +1,4 @@
 from itertools import count, cycle
-from typing import Sequence, TypeVar
 
 from python_streams import Stream
 
