@@ -6,6 +6,16 @@ T = TypeVar('T')
 V = TypeVar('V')
 
 
+def w(func):
+    def lambda_func(item):
+        if type(item) is Tuple:
+            return func(*item)
+        else:
+            return func(item)
+
+    return lambda_func
+
+
 class Stream(Generic[T], Iterable):
     def __init__(self, items: Iterable[T] = ()):
         self.items = iter(items)
@@ -20,7 +30,7 @@ class Stream(Generic[T], Iterable):
         return Stream(map(lambda x: func(x) if condition(x) else x, self.items))
 
     def filter(self, func: Callable[[T], bool]) -> 'Stream[T]':
-        return Stream(filter(func, self.items))
+        return Stream(filter(w(func), self.items))
 
     def for_each(self, func: Callable[[T], Any]):
         for x in self.items:
