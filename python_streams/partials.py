@@ -11,6 +11,7 @@ V = TypeVar('V')
 U = TypeVar('U')
 W = TypeVar('W')
 X = TypeVar('X')
+Y = TypeVar('Y')
 
 
 def add(n: N) -> NumberToNumber:
@@ -60,6 +61,15 @@ def compose3(
         third_func: Callable[[W], X]
 ) -> Callable[[U], X]:
     return compose(first_func, compose(second_func, third_func))
+
+
+def compose4(
+        first_func: Callable[[U], V],
+        second_func: Callable[[V], W],
+        third_func: Callable[[W], X],
+        fourth_func: Callable[[X], Y],
+) -> Callable[[U], Y]:
+    return compose(first_func, compose3(second_func, third_func, fourth_func))
 
 
 def equals(val: N) -> Callable[[N], bool]:
