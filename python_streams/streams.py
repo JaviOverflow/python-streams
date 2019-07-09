@@ -43,6 +43,14 @@ class Stream(Generic[T], Iterable):
     def get(self, index: int) -> T:
         return next(islice(self.items, index, index + 1))
 
+    def index_of(self, item: T) -> int:
+        index = 0
+        for self_item in self.items:
+            if self_item == item:
+                return index
+            index += 1
+        return -1
+
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))
 

@@ -69,6 +69,14 @@ def test___get_when___index_too_high():
         Stream([0, 1, 2, 3]).get(7)
 
 
+def test_index_of_when_item_in_stream():
+    assert Stream([0, 1, 2]).index_of(1) == 1
+
+
+def test_index_of_when_item_not_in_stream():
+    assert Stream([0, 1, 2]).index_of(4) == -1
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
