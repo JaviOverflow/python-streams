@@ -110,6 +110,17 @@ class Stream(Generic[T], Iterable):
                 unique_items.append(item)
         return Stream(unique_items)
 
+    # TODO: Fix non laziness
+    def distinct_by(self, selector: Transform) -> 'Stream[T]':
+        unique_items = []
+        unique_keys = []
+        for item in self.to_list():
+            key = expand(selector)(item)
+            if key not in unique_keys:
+                unique_keys.append(key)
+                unique_items.append(item)
+        return Stream(unique_items)
+
     # end kotlin functions
 
     def map(self, func: Transform) -> 'Stream[V]':

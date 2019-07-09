@@ -133,6 +133,14 @@ def test_distinct_when_stream_is_empty():
     assert Stream().distinct() == Stream()
 
 
+def test_distinct_by():
+    assert Stream([('a', 1), ('b', 2), ('b', 4)]).distinct_by(lambda k, v: k) == Stream([('a', 1), ('b', 2)])
+
+
+def test_distinct_by_when_stream_is_empty():
+    assert Stream().distinct_by(lambda k, v: k) == Stream()
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
