@@ -26,11 +26,16 @@ class Stream(Generic[T], Iterable):
     def __iter__(self) -> Iterator[T]:
         yield from self.items
 
-    def __contains__(self, item: T) -> bool:
-        return item in self.items
+    def __contains__(self, item_or_iterable: Union[T, Iterable[T]]) -> bool:
+        return (self.contains_all(item_or_iterable)
+                if isinstance(item_or_iterable, Iterable)
+                else self.contains(item_or_iterable))
 
     def contains(self, item: T) -> bool:
-        return item in self
+        return item in self.items
+
+    def contains_all(self, iterator: Iterable[T]) -> bool:
+        return set(iterator).issubset(set(self))
 
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))

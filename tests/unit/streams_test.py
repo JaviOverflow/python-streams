@@ -25,6 +25,30 @@ def test_contains_when_item_is_not_contained():
     assert not Stream([1, 2]).contains(3)
 
 
+def test___contains___when_other_stream_is_contained():
+    assert Stream([1, 3]) in Stream([1, 2, 3, 4])
+
+
+def test___contains___when_other_stream_is_not_contained():
+    assert Stream([1, 3]) not in Stream([1])
+
+
+def test___contains___when_other_iterable_is_contained():
+    assert [1, 3] in Stream([1, 2, 3, 4])
+
+
+def test_contains_all_when_other_stream_is_contained():
+    assert Stream([1, 2, 3, 4]).contains_all(Stream([1, 3]))
+
+
+def test_contains_all_when_other_stream_is_not_contained():
+    assert not Stream([1]).contains_all(Stream([1, 3]))
+
+
+def test_contains_all_when_other_iterable_is_contained():
+    assert Stream([1, 2, 3, 4]).contains_all([1, 3])
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
