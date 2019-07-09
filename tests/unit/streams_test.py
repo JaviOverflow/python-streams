@@ -97,10 +97,21 @@ def test_sub_stream():
     assert Stream([0, 1, 2, 3, 4]).sub_stream(1, 3) == Stream([1, 2])
 
 
+def test_indices():
+    assert Stream(['a', 'b', 'c', 'd']).indices() == Stream(range(4))
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
     assert s.to_list() == ['a', 'b', 'c']
+
+
+def test_to_list_when_without_cache():
+    s = Stream(['a', 'b', 'c'], with_cache=False)
+    assert s.to_list() == ['a', 'b', 'c']
+    with raises(Stream.AlreadyConsumed):
+        s.to_list()
 
 
 def test_map():

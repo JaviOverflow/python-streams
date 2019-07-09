@@ -1,3 +1,4 @@
+import random
 from inspect import signature
 from functools import lru_cache, reduce
 from itertools import islice, chain, count
@@ -20,17 +21,25 @@ def expand(func: Transform):
 
 
 class Stream(Generic[T], Iterable):
-    def __init__(self, items: Iterable[T] = ()):
+    def __init__(self, items: Iterable[T] = (), with_cache=True):
         self.items = iter(items)
+        self.with_cache = with_cache
+        self.cache = None
+        self.is_consumed = False
+
+    def __iter__(self) -> Iterator[T]:
+        yield from self.items
+
+    def __len__(self) -> int:
+        return len(self.to_list())
+
+    # start kotlin functions
 
     def __eq__(self, other):
         for self_item, other_item in zip(self, other):
             if self_item != other_item:
                 return False
         return True
-
-    def __iter__(self) -> Iterator[T]:
-        yield from self.items
 
     def __contains__(self, item_or_iterable: Union[T, Iterable[T]]) -> bool:
         return (self.contains_all(item_or_iterable)
@@ -71,6 +80,11 @@ class Stream(Generic[T], Iterable):
 
     def sub_stream(self, from_index_inclusive: int, to_index_exclusive: int) -> 'Stream[T]':
         return Stream(islice(self, from_index_inclusive, to_index_exclusive))
+
+    def indices(self) -> 'Stream[int]':
+        return Stream(range(len(self)))
+
+    # end kotlin functions
 
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))
@@ -119,6 +133,17 @@ class Stream(Generic[T], Iterable):
     def extend(self, item: T) -> 'Stream[T]':
         return self.chain(Stream((item,)))
 
-    @lru_cache(1)
+    class AlreadyConsumed(Exception):
+        pass
+
     def to_list(self) -> List[T]:
-        return list(self.items)
+        if self.with_cache:
+            if not self.cache:
+                self.cache = list(self.items)
+            return self.cache
+        else:
+            if self.is_consumed:
+                raise self.AlreadyConsumed
+            else:
+                self.is_consumed = True
+                return list(self.items)
