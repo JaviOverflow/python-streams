@@ -5,6 +5,8 @@ from itertools import islice, chain, count
 from types import BuiltinFunctionType
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Union
 
+from python_streams.partials import compose
+
 T = TypeVar('T')
 V = TypeVar('V')
 
@@ -18,6 +20,10 @@ def expand(func: Transform):
 
     return (expanded_func if not isinstance(func, BuiltinFunctionType) and len(signature(func).parameters) > 1
             else func)
+
+
+def Not(value: bool):
+    return not value
 
 
 class Stream(Generic[T], Iterable):
@@ -86,6 +92,9 @@ class Stream(Generic[T], Iterable):
 
     def last_index(self) -> int:
         return len(self) - 1
+
+    def all(self, condition: Filter) -> bool:
+        return list(filter(compose(expand(condition), Not), self.items)) == []
 
     # end kotlin functions
 

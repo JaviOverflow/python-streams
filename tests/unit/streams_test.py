@@ -109,6 +109,14 @@ def test_last_index_when_stream_is_empty():
     assert Stream().last_index() == -1
 
 
+def test_all_when_all_items_match():
+    assert Stream([2, 4, 6, 8]).all(lambda x: x % 2 == 0)
+
+
+def test_all_when_not_all_items_match():
+    assert not Stream([2, 4, 7]).all(lambda x: x % 2 == 0)
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
