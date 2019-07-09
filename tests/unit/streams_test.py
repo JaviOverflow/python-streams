@@ -1,5 +1,7 @@
 from itertools import count, cycle
 
+from pytest import raises
+
 from python_streams import Stream
 
 
@@ -47,6 +49,24 @@ def test_contains_all_when_other_stream_is_not_contained():
 
 def test_contains_all_when_other_iterable_is_contained():
     assert Stream([1, 2, 3, 4]).contains_all([1, 3])
+
+
+def test_get():
+    assert Stream([0, 1, 2, 3]).get(2) == 2
+
+
+def test_get_when_index_too_high():
+    with raises(StopIteration):
+        Stream([0, 1, 2, 3]).get(7)
+
+
+def test___get_item___():
+    assert Stream([0, 1, 2, 3])[2] == 2
+
+
+def test___get_when___index_too_high():
+    with raises(StopIteration):
+        Stream([0, 1, 2, 3]).get(7)
 
 
 def test_to_list():

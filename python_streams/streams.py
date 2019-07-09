@@ -37,6 +37,12 @@ class Stream(Generic[T], Iterable):
     def contains_all(self, iterator: Iterable[T]) -> bool:
         return set(iterator).issubset(set(self))
 
+    def __getitem__(self, index: int) -> T:
+        return self.get(index)
+
+    def get(self, index: int) -> T:
+        return next(islice(self.items, index, index + 1))
+
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))
 
