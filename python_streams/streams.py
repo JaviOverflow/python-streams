@@ -23,6 +23,12 @@ class Stream(Generic[T], Iterable):
     def __init__(self, items: Iterable[T] = ()):
         self.items = iter(items)
 
+    def __eq__(self, other):
+        for self_item, other_item in zip(self, other):
+            if self_item != other_item:
+                return False
+        return True
+
     def __iter__(self) -> Iterator[T]:
         yield from self.items
 
@@ -62,6 +68,9 @@ class Stream(Generic[T], Iterable):
             if self_item == item:
                 last_index = index
         return last_index
+
+    def sub_stream(self, from_index_inclusive: int, to_index_exclusive: int) -> 'Stream[T]':
+        return Stream(islice(self, from_index_inclusive, to_index_exclusive))
 
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))

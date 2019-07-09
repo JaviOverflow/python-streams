@@ -93,6 +93,10 @@ def test_last_index_of_when_item_not_in_stream():
     assert Stream([0, 1, 2]).last_index_of(4) == -1
 
 
+def test_sub_stream():
+    assert Stream([0, 1, 2, 3, 4]).sub_stream(1, 3) == Stream([1, 2])
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
