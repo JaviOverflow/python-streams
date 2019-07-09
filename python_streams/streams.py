@@ -99,6 +99,17 @@ class Stream(Generic[T], Iterable):
     def any(self, condition: Filter) -> bool:
         return list(filter(expand(condition), self.items)) != []
 
+    def count(self) -> int:
+        return len(self)
+
+    # TODO: Fix non laziness
+    def distinct(self) -> 'Stream[T]':
+        unique_items = []
+        for item in self.to_list():
+            if item not in unique_items:
+                unique_items.append(item)
+        return Stream(unique_items)
+
     # end kotlin functions
 
     def map(self, func: Transform) -> 'Stream[V]':

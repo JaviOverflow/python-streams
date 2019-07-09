@@ -125,6 +125,14 @@ def test_any_when_no_items_match():
     assert not Stream([1, 7]).any(lambda x: x % 2 == 0)
 
 
+def test_distinct():
+    assert Stream([1, 1, 2, 2, 2, 3]).distinct() == Stream([1, 2, 3])
+
+
+def test_distinct_when_stream_is_empty():
+    assert Stream().distinct() == Stream()
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
