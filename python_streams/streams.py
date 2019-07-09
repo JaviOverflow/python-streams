@@ -1,5 +1,5 @@
-from functools import lru_cache
 from inspect import signature
+from functools import lru_cache, reduce
 from itertools import islice, chain
 from types import BuiltinFunctionType
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
@@ -34,6 +34,9 @@ class Stream(Generic[T], Iterable):
 
     def filter(self, condition: Filter) -> 'Stream[T]':
         return Stream(filter(expand(condition), self.items))
+
+    def reduce(self, func: Callable[[V, T], V], initial: Optional[V] = None) -> V:
+        return reduce(func, self.items, initial)
 
     def for_each(self, func: Transform):
         for x in self.items:
