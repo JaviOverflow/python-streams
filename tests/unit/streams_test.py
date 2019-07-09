@@ -1,5 +1,4 @@
 from itertools import count, cycle
-from typing import Sequence, TypeVar
 
 from python_streams import Stream
 
@@ -8,6 +7,22 @@ def test_iter():
     s = Stream([0, 1, 2, 3])
     for i, x in zip(range(4), s):
         assert i == x
+
+
+def test___contains___when_item_is_contained():
+    assert 1 in Stream([1, 2])
+
+
+def test___contains___when_item_is_not_contained():
+    assert 3 not in Stream([1, 2])
+
+
+def test_contains_when_item_is_contained():
+    assert Stream([1, 2]).contains(1)
+
+
+def test_contains_when_item_is_not_contained():
+    assert not Stream([1, 2]).contains(3)
 
 
 def test_to_list():
