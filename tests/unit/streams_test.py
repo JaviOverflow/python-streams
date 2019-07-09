@@ -73,6 +73,14 @@ def test_index_of_when_item_in_stream():
     assert Stream([0, 1, 2]).index_of(1) == 1
 
 
+def test_is_empty_when_stream_is_empty():
+    assert Stream().is_empty()
+
+
+def test_is_empty_when_stream_is_not_empty():
+    assert not Stream([1, 2]).is_empty()
+
+
 def test_index_of_when_item_not_in_stream():
     assert Stream([0, 1, 2]).index_of(4) == -1
 

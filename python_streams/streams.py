@@ -51,6 +51,13 @@ class Stream(Generic[T], Iterable):
             index += 1
         return -1
 
+    def is_empty(self) -> bool:
+        try:
+            self.items.__next__()
+            return False
+        except StopIteration:
+            return True
+
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))
 
