@@ -36,6 +36,8 @@ class Stream(Generic[T], Iterable):
         return Stream(filter(expand(condition), self.items))
 
     def reduce(self, func: Callable[[V, T], V], initial: Optional[V] = None) -> V:
+        if initial is None:
+            initial = next(self.items)
         return reduce(func, self.items, initial)
 
     def for_each(self, func: Transform):

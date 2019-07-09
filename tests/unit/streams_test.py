@@ -1,3 +1,4 @@
+from functools import reduce
 from itertools import count, cycle
 from typing import Sequence, TypeVar
 
@@ -99,4 +100,5 @@ def test_filter_when_items_are_tuples():
 
 
 def test_reduce():
-    assert Stream([1, 2, 3, 4]).reduce(lambda k, v: k * v, 1) == 24
+    assert Stream([1, 2, 3, 4]).reduce(lambda k, v: k + v) == 10
+
