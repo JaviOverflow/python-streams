@@ -1,6 +1,6 @@
 from inspect import signature
 from functools import lru_cache, reduce
-from itertools import islice, chain
+from itertools import islice, chain, count
 from types import BuiltinFunctionType
 from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
 
@@ -44,11 +44,9 @@ class Stream(Generic[T], Iterable):
         return next(islice(self.items, index, index + 1))
 
     def index_of(self, item: T) -> int:
-        index = 0
-        for self_item in self.items:
+        for index, self_item in zip(self.items, count()):
             if self_item == item:
                 return index
-            index += 1
         return -1
 
     def is_empty(self) -> bool:
@@ -57,6 +55,13 @@ class Stream(Generic[T], Iterable):
             return False
         except StopIteration:
             return True
+
+    def last_index_of(self, item: T) -> int:
+        last_index = -1
+        for index, self_item in zip(count(), self.items):
+            if self_item == item:
+                last_index = index
+        return last_index
 
     def map(self, func: Transform) -> 'Stream[V]':
         return Stream(map(expand(func), self.items))

@@ -70,7 +70,7 @@ def test___get_when___index_too_high():
 
 
 def test_index_of_when_item_in_stream():
-    assert Stream([0, 1, 2]).index_of(1) == 1
+    assert Stream([0, 1, 2, 1]).index_of(1) == 1
 
 
 def test_is_empty_when_stream_is_empty():
@@ -83,6 +83,14 @@ def test_is_empty_when_stream_is_not_empty():
 
 def test_index_of_when_item_not_in_stream():
     assert Stream([0, 1, 2]).index_of(4) == -1
+
+
+def test_last_index_of_when_two_items_in_stream():
+    assert Stream([0, 1, 2, 1]).last_index_of(1) == 3
+
+
+def test_last_index_of_when_item_not_in_stream():
+    assert Stream([0, 1, 2]).last_index_of(4) == -1
 
 
 def test_to_list():
