@@ -1,9 +1,9 @@
-import random
 from inspect import signature
-from functools import lru_cache, reduce
+from functools import reduce
+from inspect import signature
 from itertools import islice, chain, count
 from types import BuiltinFunctionType
-from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Any, Union
+from typing import Iterable, Iterator, TypeVar, Callable, Tuple, Optional, Generic, List, Union
 
 T = TypeVar('T')
 V = TypeVar('V')
@@ -83,6 +83,9 @@ class Stream(Generic[T], Iterable):
 
     def indices(self) -> 'Stream[int]':
         return Stream(range(len(self)))
+
+    def last_index(self) -> int:
+        return len(self) - 1
 
     # end kotlin functions
 

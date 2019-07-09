@@ -101,6 +101,14 @@ def test_indices():
     assert Stream(['a', 'b', 'c', 'd']).indices() == Stream(range(4))
 
 
+def test_last_index():
+    assert Stream(['a', 'b', 'c', 'd']).last_index() == 3
+
+
+def test_last_index_when_stream_is_empty():
+    assert Stream().last_index() == -1
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
