@@ -117,6 +117,14 @@ def test_all_when_not_all_items_match():
     assert not Stream([2, 4, 7]).all(lambda x: x % 2 == 0)
 
 
+def test_any_when_an_item_match():
+    assert Stream([2, 7]).any(lambda x: x % 2 == 0)
+
+
+def test_any_when_no_items_match():
+    assert not Stream([1, 7]).any(lambda x: x % 2 == 0)
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']

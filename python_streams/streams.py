@@ -96,6 +96,9 @@ class Stream(Generic[T], Iterable):
     def all(self, condition: Filter) -> bool:
         return list(filter(compose(expand(condition), Not), self.items)) == []
 
+    def any(self, condition: Filter) -> bool:
+        return list(filter(expand(condition), self.items)) != []
+
     # end kotlin functions
 
     def map(self, func: Transform) -> 'Stream[V]':
