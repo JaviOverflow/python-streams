@@ -1,5 +1,4 @@
 from itertools import count, cycle
-from typing import Sequence, TypeVar
 
 from python_streams import Stream
 
@@ -96,3 +95,8 @@ def test_filter_when_items_are_tuples():
     assert (Stream([('a', 1), ('b', 5), ('c', 3)])
             .filter(lambda k, v: v > 3)
             .to_list()) == [('b', 5)]
+
+
+def test_reduce():
+    assert Stream([1, 2, 3, 4]).reduce(lambda k, v: k + v) == 10
+
