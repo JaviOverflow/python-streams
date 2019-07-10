@@ -10,6 +10,7 @@ U = TypeVar('U')
 W = TypeVar('W')
 X = TypeVar('X')
 
+
 def add(n: T) -> NumberToNumber:
     return lambda x: x + n
 

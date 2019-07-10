@@ -1,5 +1,6 @@
 from itertools import count, cycle
-from typing import Sequence, TypeVar
+
+from pytest import raises
 
 from python_streams import Stream
 
@@ -10,10 +11,147 @@ def test_iter():
         assert i == x
 
 
+def test___contains___when_item_is_contained():
+    assert 1 in Stream([1, 2])
+
+
+def test___contains___when_item_is_not_contained():
+    assert 3 not in Stream([1, 2])
+
+
+def test_contains_when_item_is_contained():
+    assert Stream([1, 2]).contains(1)
+
+
+def test_contains_when_item_is_not_contained():
+    assert not Stream([1, 2]).contains(3)
+
+
+def test___contains___when_other_stream_is_contained():
+    assert Stream([1, 3]) in Stream([1, 2, 3, 4])
+
+
+def test___contains___when_other_stream_is_not_contained():
+    assert Stream([1, 3]) not in Stream([1])
+
+
+def test___contains___when_other_iterable_is_contained():
+    assert [1, 3] in Stream([1, 2, 3, 4])
+
+
+def test_contains_all_when_other_stream_is_contained():
+    assert Stream([1, 2, 3, 4]).contains_all(Stream([1, 3]))
+
+
+def test_contains_all_when_other_stream_is_not_contained():
+    assert not Stream([1]).contains_all(Stream([1, 3]))
+
+
+def test_contains_all_when_other_iterable_is_contained():
+    assert Stream([1, 2, 3, 4]).contains_all([1, 3])
+
+
+def test_get():
+    assert Stream([0, 1, 2, 3]).get(2) == 2
+
+
+def test_get_when_index_too_high():
+    with raises(StopIteration):
+        Stream([0, 1, 2, 3]).get(7)
+
+
+def test___get_item___():
+    assert Stream([0, 1, 2, 3])[2] == 2
+
+
+def test___get_when___index_too_high():
+    with raises(StopIteration):
+        Stream([0, 1, 2, 3]).get(7)
+
+
+def test_index_of_when_item_in_stream():
+    assert Stream([0, 1, 2, 1]).index_of(1) == 1
+
+
+def test_is_empty_when_stream_is_empty():
+    assert Stream().is_empty()
+
+
+def test_is_empty_when_stream_is_not_empty():
+    assert not Stream([1, 2]).is_empty()
+
+
+def test_index_of_when_item_not_in_stream():
+    assert Stream([0, 1, 2]).index_of(4) == -1
+
+
+def test_last_index_of_when_two_items_in_stream():
+    assert Stream([0, 1, 2, 1]).last_index_of(1) == 3
+
+
+def test_last_index_of_when_item_not_in_stream():
+    assert Stream([0, 1, 2]).last_index_of(4) == -1
+
+
+def test_sub_stream():
+    assert Stream([0, 1, 2, 3, 4]).sub_stream(1, 3) == Stream([1, 2])
+
+
+def test_indices():
+    assert Stream(['a', 'b', 'c', 'd']).indices() == Stream(range(4))
+
+
+def test_last_index():
+    assert Stream(['a', 'b', 'c', 'd']).last_index() == 3
+
+
+def test_last_index_when_stream_is_empty():
+    assert Stream().last_index() == -1
+
+
+def test_all_when_all_items_match():
+    assert Stream([2, 4, 6, 8]).all(lambda x: x % 2 == 0)
+
+
+def test_all_when_not_all_items_match():
+    assert not Stream([2, 4, 7]).all(lambda x: x % 2 == 0)
+
+
+def test_any_when_an_item_match():
+    assert Stream([2, 7]).any(lambda x: x % 2 == 0)
+
+
+def test_any_when_no_items_match():
+    assert not Stream([1, 7]).any(lambda x: x % 2 == 0)
+
+
+def test_distinct():
+    assert Stream([1, 1, 2, 2, 2, 3]).distinct() == Stream([1, 2, 3])
+
+
+def test_distinct_when_stream_is_empty():
+    assert Stream().distinct() == Stream()
+
+
+def test_distinct_by():
+    assert Stream([('a', 1), ('b', 2), ('b', 4)]).distinct_by(lambda k, v: k) == Stream([('a', 1), ('b', 2)])
+
+
+def test_distinct_by_when_stream_is_empty():
+    assert Stream().distinct_by(lambda k, v: k) == Stream()
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
     assert s.to_list() == ['a', 'b', 'c']
+
+
+def test_to_list_when_without_cache():
+    s = Stream(['a', 'b', 'c'], with_cache=False)
+    assert s.to_list() == ['a', 'b', 'c']
+    with raises(Stream.AlreadyConsumed):
+        s.to_list()
 
 
 def test_map():
