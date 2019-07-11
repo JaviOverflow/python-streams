@@ -1,7 +1,9 @@
-from typing import Callable, TypeVar, Union, Any, Sequence, Dict, Iterable
+from typing import Callable, TypeVar, Union, Iterable
 
-T = TypeVar('T', int, float)
-NumberToNumber = Callable[[T], T]
+from python_streams import commodities
+
+N = TypeVar('N', int, float)
+NumberToNumber = Callable[[N], N]
 IntToInt = Callable[[int], int]
 IntToNumber = Callable[[int], Union[int, float]]
 
@@ -9,28 +11,30 @@ V = TypeVar('V')
 U = TypeVar('U')
 W = TypeVar('W')
 X = TypeVar('X')
+Y = TypeVar('Y')
 
-def add(n: T) -> NumberToNumber:
+
+def add(n: N) -> NumberToNumber:
     return lambda x: x + n
 
 
-def subtract_from(n: T) -> NumberToNumber:
+def subtract_from(n: N) -> NumberToNumber:
     return lambda x: n - x
 
 
-def subtract_to(n: T) -> NumberToNumber:
+def subtract_to(n: N) -> NumberToNumber:
     return lambda x: x - n
 
 
-def multiply(n: T) -> NumberToNumber:
+def multiply(n: N) -> NumberToNumber:
     return lambda x: x * n
 
 
-def divide_over(n: T) -> NumberToNumber:
+def divide_over(n: N) -> NumberToNumber:
     return lambda x: n / x
 
 
-def divide_by(n: T) -> NumberToNumber:
+def divide_by(n: N) -> NumberToNumber:
     return lambda x: x / n
 
 
@@ -59,9 +63,30 @@ def compose3(
     return compose(first_func, compose(second_func, third_func))
 
 
-def is_in(it: Iterable[T]) -> Callable[[T], bool]:
+def compose4(
+        first_func: Callable[[U], V],
+        second_func: Callable[[V], W],
+        third_func: Callable[[W], X],
+        fourth_func: Callable[[X], Y],
+) -> Callable[[U], Y]:
+    return compose(first_func, compose3(second_func, third_func, fourth_func))
+
+
+def equals(val: N) -> Callable[[N], bool]:
+    return lambda x: x == val
+
+
+def not_equals(val: N) -> Callable[[N], bool]:
+    return lambda x: x == val
+
+
+def is_in(it: Iterable[N]) -> Callable[[N], bool]:
     return lambda x: x in it
 
 
-def is_not_in(it: Iterable[T]) -> Callable[[T], bool]:
+def inc():
+    return commodities.inc
+
+
+def is_not_in(it: Iterable[N]) -> Callable[[N], bool]:
     return lambda x: x not in it

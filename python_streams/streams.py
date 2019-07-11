@@ -78,3 +78,6 @@ class Stream(Generic[T], Iterable):
     @lru_cache(1)
     def to_list(self) -> List[T]:
         return list(self.items)
+
+    def join(self, separator: str = '') -> str:
+        return separator.join(self.items)

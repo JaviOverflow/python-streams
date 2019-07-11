@@ -1,4 +1,5 @@
-from python_streams import Stream, partials
+from python_streams import Stream, partials, compose4
+from python_streams import partials as _
 
 
 def caesar_cypher(message: str, shift: int) -> str:
@@ -14,9 +15,19 @@ def caesar_decypher(encrypted_message: str, shift: int) -> str:
     return caesar_cypher(encrypted_message, -shift)
 
 
+def caesar_cypher2(message: str, shift: int) -> str:
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    return Stream(message).map_if(
+        condition=_.is_in(alphabet),
+        func=compose4(alphabet.find, _.add(shift), _.modulo(len(alphabet)), alphabet.__getitem__)
+    ).join()
+
+
 def test_caesar_cypher():
     assert caesar_cypher('hey', 3) == 'khb'
     assert caesar_decypher('wigvix', 4) == 'secret'
+    assert caesar_cypher2('hey', 3) == 'khb'
+    assert caesar_cypher2('hey hey!', 3) == 'khb khb!'
 
 
 def caesar_cypher_with_special_chars(message: str, shift: int) -> str:
