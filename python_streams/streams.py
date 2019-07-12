@@ -121,6 +121,17 @@ class Stream(Generic[T], Iterable):
                 unique_items.append(item)
         return Stream(unique_items)
 
+    def drop(self, n: int) -> 'Stream[T]':
+        for i in range(n):
+            it = next(self.items, None)
+            if it is None:
+                return Stream(())
+        return Stream(self.items)
+
+    def drop_last(self) -> 'Stream[T]':
+        items = self.to_list()[:-1]
+        return Stream(items)
+
     # end kotlin functions
 
     def map(self, func: Transform) -> 'Stream[V]':
@@ -147,13 +158,6 @@ class Stream(Generic[T], Iterable):
 
     def take(self, n: int) -> 'Stream[T]':
         return Stream(islice(self, n))
-
-    def drop(self, n: int) -> 'Stream[T]':
-        for i in range(n):
-            it = next(self.items, None)
-            if it is None:
-                return Stream(())
-        return Stream(self.items)
 
     def first(self) -> T:
         return next(self.items)

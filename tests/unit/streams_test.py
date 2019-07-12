@@ -141,6 +141,14 @@ def test_distinct_by_when_stream_is_empty():
     assert Stream().distinct_by(lambda k, v: k) == Stream()
 
 
+def test_drop():
+    assert Stream([0,1,2,3,4,5]).drop(3).first() == 3
+
+
+def test_drop_last():
+    assert Stream([0,1,2,3]).drop_last() == Stream([0,1,2])
+
+
 def test_to_list():
     s = Stream(['a', 'b', 'c'])
     assert s.to_list() == ['a', 'b', 'c']
@@ -164,10 +172,6 @@ def test_first():
 
 def test_take():
     assert Stream(count(1, 2)).take(3).to_list() == [1, 3, 5]
-
-
-def test_drop():
-    assert Stream(count(1, 2)).drop(3).first() == 7
 
 
 def test_filter():
