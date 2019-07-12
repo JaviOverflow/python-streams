@@ -1,6 +1,6 @@
 from itertools import count, cycle
 
-from python_streams import Stream
+from streams import Stream
 
 
 def test_iter():

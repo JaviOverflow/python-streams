@@ -1,5 +1,5 @@
-from python_streams import Stream, partials, compose4
-from python_streams import partials as _
+from streams import Stream, partials, compose4
+from streams import partials as _
 
 
 def caesar_cypher(message: str, shift: int) -> str:
