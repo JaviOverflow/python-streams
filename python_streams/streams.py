@@ -36,6 +36,8 @@ class Stream(Generic[T], Iterable):
         return Stream(filter(expand(condition), self.items))
 
     def reduce(self, func: Callable[[V, T], V], initial: Optional[V] = None) -> V:
+        if initial is None:
+            initial = next(self.items)
         return reduce(func, self.items, initial)
 
     def for_each(self, func: Transform):
@@ -76,3 +78,6 @@ class Stream(Generic[T], Iterable):
     @lru_cache(1)
     def to_list(self) -> List[T]:
         return list(self.items)
+
+    def join(self, separator: str = '') -> str:
+        return separator.join(self.items)
