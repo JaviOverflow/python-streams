@@ -1,10 +1,21 @@
 # Python Streams
 
+## Getting started
+
+```bash
+pip install python-streams
+```
+
+```python
+from streams import Stream
+Stream(('hello', 'world')).for_each(print)
+```
+
 ## Example
 
 ```python
-from python_streams import Stream, compose4
-from python_streams import partials as _
+from streams import Stream, compose4
+from streams import partials as _
 
 
 def caesar_cypher(message: str, shift: int) -> str:
@@ -26,8 +37,8 @@ Let's attempt an alternate implementation to show some more features:
 ```python
 from itertools import cycle
 
-from python_streams import Stream, compose
-from python_streams import partials as _
+from streams import Stream, compose
+from streams import partials as _
 
 
 def caesar_cypher(message: str, shift: int) -> str:

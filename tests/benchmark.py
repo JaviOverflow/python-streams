@@ -4,7 +4,7 @@ from itertools import count, islice
 
 from functional import seq
 
-from python_streams import Stream
+from streams import Stream
 
 
 def sieve_eratosthenes() -> Stream[int]:

@@ -1,6 +1,6 @@
 from typing import Callable, TypeVar, Union, Iterable
 
-from python_streams import commodities
+from streams import commodities
 
 N = TypeVar('N', int, float)
 NumberToNumber = Callable[[N], N]
