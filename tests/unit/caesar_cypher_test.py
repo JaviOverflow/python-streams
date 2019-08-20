@@ -1,10 +1,10 @@
-from python_streams import Stream, partials, compose4
+from python_streams import Stream, partials, compose
 from python_streams import partials as _
 
 
 def caesar_cypher(message: str, shift: int) -> str:
     num_letters = (ord('z') - ord('a')) + 1
-    ascii_cycle = partials.compose3(
+    ascii_cycle = partials.compose(
         partials.add(-ord('a')),
         partials.modulo(num_letters),
         partials.add(ord('a')))
@@ -19,7 +19,7 @@ def caesar_cypher2(message: str, shift: int) -> str:
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     return Stream(message).map_if(
         condition=_.is_in(alphabet),
-        func=compose4(alphabet.find, _.add(shift), _.modulo(len(alphabet)), alphabet.__getitem__)
+        func=compose(alphabet.find, _.add(shift), _.modulo(len(alphabet)), alphabet.__getitem__)
     ).join()
 
 
@@ -34,7 +34,7 @@ def caesar_cypher_with_special_chars(message: str, shift: int) -> str:
     a = ord('a')
     z = ord('z')
     num_letters = (z - a) + 1
-    ascii_cycle = partials.compose3(
+    ascii_cycle = partials.compose(
         partials.add(-a),
         partials.modulo(num_letters),
         partials.add(a))

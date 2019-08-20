@@ -3,7 +3,7 @@
 ## Example
 
 ```python
-from python_streams import Stream, compose4
+from python_streams import Stream, compose
 from python_streams import partials as _
 
 
@@ -11,7 +11,7 @@ def caesar_cypher(message: str, shift: int) -> str:
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     return Stream(message).map_if(
         condition=_.is_in(alphabet),
-        func=compose4(alphabet.find, _.add(shift), _.modulo(len(alphabet)), alphabet.__getitem__)
+        func=compose(alphabet.find, _.add(shift), _.modulo(len(alphabet)), alphabet.__getitem__)
     ).join()
 ```
 Result:
