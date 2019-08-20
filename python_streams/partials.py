@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar, Union, Iterable
+from typing import Callable, TypeVar, Union, Iterable, overload
 
 from python_streams import commodities
 
@@ -12,6 +12,7 @@ U = TypeVar('U')
 W = TypeVar('W')
 X = TypeVar('X')
 Y = TypeVar('Y')
+Z = TypeVar('Z')
 
 
 def add(n: N) -> NumberToNumber:
@@ -51,25 +52,51 @@ def modulo(n: int) -> IntToInt:
 #     return lambda seq: seq[key]
 
 
+@overload
 def compose(first_func: Callable[[U], V], second_func: Callable[[V], W]) -> Callable[[U], W]:
-    return lambda x: second_func(first_func(x))
+    ...
 
 
-def compose3(
+@overload
+def compose(
         first_func: Callable[[U], V],
         second_func: Callable[[V], W],
         third_func: Callable[[W], X]
 ) -> Callable[[U], X]:
-    return compose(first_func, compose(second_func, third_func))
+    ...
 
 
-def compose4(
+@overload
+def compose(
         first_func: Callable[[U], V],
         second_func: Callable[[V], W],
         third_func: Callable[[W], X],
         fourth_func: Callable[[X], Y],
 ) -> Callable[[U], Y]:
-    return compose(first_func, compose3(second_func, third_func, fourth_func))
+    ...
+
+
+@overload
+def compose(
+        first_func: Callable[[U], V],
+        second_func: Callable[[V], W],
+        third_func: Callable[[W], X],
+        fourth_func: Callable[[X], Y],
+        fifth_func: Callable[[Y], Z],
+) -> Callable[[U], Z]:
+    ...
+
+
+def compose(*funcs):
+    # Helper function necessary because late binding closures in python would produce infinite recursion
+    def compose2(func1, func2):
+        return lambda x: func2(func1(x))
+
+    first_func, second_func = funcs[:2]
+    composed = compose2(first_func, second_func)
+    for func in funcs[2:]:
+        composed = compose2(composed, func)
+    return composed
 
 
 def equals(val: N) -> Callable[[N], bool]:
